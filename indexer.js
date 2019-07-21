@@ -1,5 +1,6 @@
 require('dotenv').config()
 const { Client } = require('@elastic/elasticsearch')
+const fs = require('fs');
 
 const config = { 
   node: process.env.ELASTICSEARCH_ENDPOINT,
@@ -17,6 +18,13 @@ export function addToIndex(data) {
     type: '_doc',
     body: data
   })
+}
+
+export function addToindexFromFile(filename) {
+  const prospects = JSON.parse(fs.readFileSync(filename))
+  for(const prospect of prospects) {
+    addToIndex(prospect)
+  }
 }
 
 export function dropIndex() {
