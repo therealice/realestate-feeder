@@ -37,25 +37,25 @@ export function parseProspect($) {
     images.push(image.attribs.src)
   })
 
-  let coords = null
+  let location = null
   try {
-    const coordsMatch = $('.map a img').attr('src').match(/(\d+\.\d+):(\d+\.\d+)\?/)
-    coords = {
-      latitude: coordsMatch[1],
-      longitude: coordsMatch[2]
+    const latlon = $('.map a img').attr('src').match(/(\d+\.\d+):(\d+\.\d+)\?/)
+    location = {
+      lat: latlon[1],
+      lon: latlon[2]
     }
   } catch(e) {}
 
   const prospect = {
     price: parsefirstInt($('.param-price').text()),
     rooms: parsefirstInt($('.price-wrapper .param').first().text()),
-    areal: parsefirstInt($('.price-wrapper .param').last().text()),
+    area: parsefirstInt($('.price-wrapper .param').last().text()),
     category: $('.subject-param.category').text().trim(),
     address: $('.subject-param.address').text().trim(),
     title: $('.subject_large').text().trim(),
     description: $('.object-text').text().trim(),
     images: images,
-    coords: coords
+    location: location
   }  
   
   return prospect
