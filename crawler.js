@@ -24,7 +24,7 @@ export async function crawl() {
   // Load prospects
   let completed = 0, fetched = 0
   for(const prospectLink of prospectLinks) {
-    const isIndexed = await isLinkIndexed(link)
+    const isIndexed = await isLinkIndexed(prospectLink.link)
 
     if(!isIndexed) {
       const prospect = await loadProspect(prospectLink, 800)
