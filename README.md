@@ -19,3 +19,8 @@ To crawl type:
 ```
 npm start
 ```
+This will do the following in order:
+1. Fetch all links to the real estate prospects
+2. Parse each prospect and write it to a json file called scraped_
+3. Drop the index specified in the .env
+4. Index all prospects in the scraped_ file.
