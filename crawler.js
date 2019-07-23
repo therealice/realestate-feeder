@@ -20,6 +20,7 @@ export async function crawl(outputFile) {
 
   // Load prospects and write them to file
   const prospects = []
+  fs.writeFileSync(outputFile, '[')
   for(const prospectLink of prospectLinks) {
     const result = await loadProspect(prospectLink, 500)
     fs.appendFileSync(outputFile, JSON.stringify(result))
@@ -27,4 +28,5 @@ export async function crawl(outputFile) {
     prospects.push(result)
     console.log('Total prospects fetched: ', prospects.length)
   }
+  fs.writeFileSync(outputFile, ']')
 }
