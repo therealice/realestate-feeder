@@ -1,6 +1,5 @@
 require('dotenv').config()
 const { Client } = require('@elastic/elasticsearch')
-const fs = require('fs');
 
 const config = { 
   node: process.env.ELASTICSEARCH_ENDPOINT,
@@ -11,7 +10,7 @@ const client = new Client(config)
 console.log('Elasticsearch endpoint:', config.node)
 console.log('Elasticsearch index:', config.index)
 
-export function addToIndex(data) {
+export async function addToIndex(data) {
   console.log('Indexing:', data)
   return client.index({
     index: config.index,
@@ -20,16 +19,36 @@ export function addToIndex(data) {
   })
 }
 
-export function addToindexFromFile(filename) {
-  const prospects = JSON.parse(fs.readFileSync(filename))
-  for(const prospect of prospects) {
-    addToIndex(prospect)
+export async function isLinkIndexed(link) {
+  const result = await client.search({
+    index: config.index,
+    type: '_doc',
+    body: {
+      query: {
+        match: { link: link }
+      }
+    }
+  })
+
+  return result.body.hits.hits.length > 0 
+}
+
+export async function createIndex() {
+  const exists = await client.indices.exists({
+    index: config.index
+  })
+
+  if(!exists) {
+    console.log('Creating index:', config.index)
+    return client.indices.create({
+      index: config.index
+    })
   }
 }
 
-export function dropIndex() {
-  console.log('Dropping index')
+export async function dropIndex() {
+  console.log('Dropping index:', config.index)
   return client.indices.delete({
-    index: config.index,
-  });
+    index: config.index
+  })
 }
