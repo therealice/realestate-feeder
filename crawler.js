@@ -13,7 +13,7 @@ export async function crawl(outputFile) {
   let prospectLinks = []
   for(const pageLink of pageLinks) {
     console.log('Getting prospects links from: ', pageLink)
-    const result = await loadProspectsLinks(pageLink, 400)
+    const result = await loadProspectsLinks(pageLink, 600)
     prospectLinks = prospectLinks.concat(result)
     console.log('Total prospect links fetched: ', prospectLinks.length)
   }
@@ -21,7 +21,7 @@ export async function crawl(outputFile) {
   // Load prospects
   const prospects = []
   for(const prospectLink of prospectLinks) {
-    const result = await loadProspect(prospectLink, 400)
+    const result = await loadProspect(prospectLink, 600)
     prospects.push(result)
     console.log('Total prospects fetched: ', prospects.length)
   }
