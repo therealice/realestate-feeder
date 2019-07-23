@@ -5,11 +5,8 @@ import { addToindexFromFile, dropIndex } from './indexer'
 (async() => {
   // Output file for scraped data
   const outputFile = 'scraped_' + new Date().toISOString() + '.json'
-
-  // 1 seconds delay after each prospect crawled
-  const delay = 1000
   
-  await crawl(outputFile, delay).catch(e => console.log(e))
+  await crawl(outputFile).catch(e => console.log(e))
 
   // Drop index
   dropIndex()

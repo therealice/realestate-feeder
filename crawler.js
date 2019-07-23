@@ -1,45 +1,30 @@
-import { loadPageContent } from './loader'
-import { parsePageUrls, parseProspectUrls, parseProspect } from './parser'
+import { loadProspectsLinks, loadPageLinks, loadProspect } from './loader'
 const fs = require('fs');
 
-async function getProspectsOnPage($, delay) {
-  const prospects = []
-  const prospectUrls = parseProspectUrls($)
-  
-  console.log('Parsing prospects on page:', prospectUrls.length)
-  for (const url of prospectUrls) {
-    const $ = await loadPageContent(url)
-    
-    const prospect = parseProspect($)
-    prospect.link = url
-    prospects.push(prospect)
-
-    await new Promise(resolve => setTimeout(resolve, delay));
-  }
-  console.log('Finished parsing page.')
-
-  return prospects
-}
-
-export async function crawl(outputFile, delay) {
+export async function crawl(outputFile) {
   // First page
   const firstPage = 'https://www.blocket.se/bostad/uthyres?sort=&ss=&se=&ros=&roe=&bs=&be=&mre=&q=&q=&q=&is=1&save_search=1&l=0&md=li&f=p&f=c&f=b&ca=15&w=3'
 
-  // Get content on first page
-  const $ = await loadPageContent(firstPage)
+  // Load page links
+  const pageLinks = await loadPageLinks(firstPage, 0)
+  console.log('Number of page links: ', pageLinks.length)
 
-  // Get pagination urls
-  const pagesUrls = parsePageUrls($)  
-  console.log('Parsing pages:', pagesUrls.length)
-  
-  // Get prospects on first page
-  const prospects = await getProspectsOnPage($, delay)
-  fs.appendFileSync(outputFile, JSON.stringify(prospects))
+  // Load prospect links for all pages
+  let prospectLinks = []
+  for(const pageLink of pageLinks) {
+    console.log('Getting prospects links from: ', pageLink)
+    const result = await loadProspectsLinks(pageLink, 500)
+    prospectLinks = prospectLinks.concat(result)
+    console.log('Total prospect links fetched: ', prospectLinks.length)
+  }
 
-  // Get prospects on pagination pages
-  for(const pageUrl of pagesUrls) {
-    const $ = await loadPageContent(pageUrl)
-    prospects = await getProspectsOnPage($, delay)
-    fs.appendFileSync(outputFile, JSON.stringify(prospects))
+  // Load prospects and write them to file
+  const prospects = []
+  for(const prospectLink of prospectLinks) {
+    const result = await loadProspect(prospectLink, 500)
+    fs.appendFileSync(outputFile, JSON.stringify(result))
+
+    prospects.push(result)
+    console.log('Total prospects fetched: ', prospects.length)
   }
 }
