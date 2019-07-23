@@ -11,7 +11,6 @@ console.log('Elasticsearch endpoint:', config.node)
 console.log('Elasticsearch index:', config.index)
 
 export async function addToIndex(data) {
-  console.log('Indexing:', data)
   return client.index({
     index: config.index,
     type: '_doc',
