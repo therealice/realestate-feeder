@@ -28,5 +28,5 @@ export async function crawl(outputFile) {
     prospects.push(result)
     console.log('Total prospects fetched: ', prospects.length)
   }
-  fs.writeFileSync(outputFile, ']')
+  fs.appendFileSync(outputFile, ']')
 }
