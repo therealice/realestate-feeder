@@ -13,20 +13,19 @@ export async function crawl(outputFile) {
   let prospectLinks = []
   for(const pageLink of pageLinks) {
     console.log('Getting prospects links from: ', pageLink)
-    const result = await loadProspectsLinks(pageLink, 500)
+    const result = await loadProspectsLinks(pageLink, 400)
     prospectLinks = prospectLinks.concat(result)
     console.log('Total prospect links fetched: ', prospectLinks.length)
   }
 
-  // Load prospects and write them to file
+  // Load prospects
   const prospects = []
-  fs.writeFileSync(outputFile, '[')
   for(const prospectLink of prospectLinks) {
-    const result = await loadProspect(prospectLink, 500)
-    fs.appendFileSync(outputFile, JSON.stringify(result))
-
+    const result = await loadProspect(prospectLink, 400)
     prospects.push(result)
     console.log('Total prospects fetched: ', prospects.length)
   }
-  fs.appendFileSync(outputFile, ']')
+
+  // Write prospects to file
+  fs.appendFileSync(outputFile, JSON.stringify(prospects))
 }
