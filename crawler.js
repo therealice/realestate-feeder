@@ -2,8 +2,7 @@ import { loadProspectsLinks, loadPageLinks, loadProspect } from './loader'
 import { createIndex, isLinkIndexed, addToIndex, dropIndex } from './indexer'
 
 export async function crawl() {
-  // Create inedx if it does not exist
-  await dropIndex()
+  // Create index if it does not exist
   await createIndex()
 
   // First page
