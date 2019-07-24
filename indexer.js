@@ -45,8 +45,21 @@ export async function createIndex() {
 
   if(!body) {
     console.log('Creating index:', config.index)
-    return client.indices.create({
+    await client.indices.create({
       index: config.index
+    })
+
+    console.log('Creating mapping')
+    return client.indices.putMapping({
+      index: config.index,
+      type: '_doc',
+      body: {
+        properties: {
+          location: {
+            type: "geo_point"
+          }
+        }
+      }
     })
   }
 }
