@@ -1,8 +1,9 @@
 import { loadProspectsLinks, loadPageLinks, loadProspect } from './loader'
-import { createIndex, isLinkIndexed, addToIndex } from './indexer'
+import { createIndex, isLinkIndexed, addToIndex, dropIndex } from './indexer'
 
 export async function crawl() {
   // Create inedx if it does not exist
+  await dropIndex()
   await createIndex()
 
   // First page
@@ -26,9 +27,9 @@ export async function crawl() {
   for(const prospectLink of prospectLinks) {
     const isIndexed = await isLinkIndexed(prospectLink)
 
-    if(!isIndexed) {
+    if(!isIndexed ) {
       const prospect = await loadProspect(prospectLink, 800)
-      addToIndex(prospect)
+      await addToIndex(prospect)
       fetched++
     }
 

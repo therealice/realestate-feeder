@@ -11,33 +11,39 @@ console.log('Elasticsearch endpoint:', config.node)
 console.log('Elasticsearch index:', config.index)
 
 export async function addToIndex(data) {
+  console.log('Indexing: ', data.link)
   return client.index({
     index: config.index,
     type: '_doc',
+    id: data.link,
     body: data
   })
 }
 
 export async function isLinkIndexed(link) {
-  const result = await client.search({
+  const { body } = await client.search({
     index: config.index,
     type: '_doc',
     body: {
       query: {
-        match: { link: link }
+        match: { _id: link }
       }
     }
   })
 
-  return result.body.hits.hits.length > 0 
+  if( body.hits.hits.length > 0) {
+    console.log('Skipping:', body.hits.hits[0]._source.link)
+  } 
+
+  return body.hits.hits.length > 0 
 }
 
 export async function createIndex() {
-  const exists = await client.indices.exists({
+  const { body } = await client.indices.exists({
     index: config.index
   })
 
-  if(!exists) {
+  if(!body) {
     console.log('Creating index:', config.index)
     return client.indices.create({
       index: config.index
@@ -46,8 +52,14 @@ export async function createIndex() {
 }
 
 export async function dropIndex() {
-  console.log('Dropping index:', config.index)
-  return client.indices.delete({
+  const { body } = await client.indices.exists({
     index: config.index
   })
+
+  if(body) {
+    console.log('Dropping index:', config.index)
+    return client.indices.delete({
+      index: config.index
+    })
+  }
 }
