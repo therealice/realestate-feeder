@@ -1,5 +1,5 @@
 import { loadProspectsLinks, loadPageLinks, loadProspect } from './loader'
-import { createIndex, isLinkIndexed, addToIndex, dropIndex } from './indexer'
+import { createIndex, isLinkIndexed, addToIndex } from './indexer'
 
 export async function crawl() {
   // Create index if it does not exist

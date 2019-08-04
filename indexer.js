@@ -2,8 +2,11 @@ require('dotenv').config()
 const { Client } = require('@elastic/elasticsearch')
 
 const config = { 
-  node: process.env.ELASTICSEARCH_ENDPOINT,
-  index: process.env.ELASTICSEARCH_INDEX 
+  node: process.env.ELASTICSEARCH_PROTOCOL + '://' + 
+    process.env.ELASTICSEARCH_USERNAME + ':' + 
+    process.env.ELASTICSEARCH_PASSWORD + '@' + 
+    process.env.ELASTICSEARCH_ENDPOINT,
+  index: process.env.ELASTICSEARCH_INDEX
 }
 
 const client = new Client(config)
